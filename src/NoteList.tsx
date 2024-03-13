@@ -14,7 +14,16 @@ import ReactSelect from "react-select";
 import { Tag } from "./App";
 import styles from "./NoteList.module.css";
 
-export function NoteList() {
+type NoteListProps = {
+  availableTags: Tag[];
+  notes: SimplifiedNote[];
+  onDeleteTag: (id: string) => void;
+  onUpdateTag: (id: string, label: string) => void;
+};
+
+
+export function NoteList({ availableTags }: NoteListProps) {
+  const [selectedTags, setSelectedTags] = useState<Tag[]>(tags);
   return (
     <>
       <Row>
@@ -37,6 +46,28 @@ export function NoteList() {
             <Form.Group controlId="title">
               <Form.Label>Title</Form.Label>
               <Form.Control type="text"></Form.Control>
+            </Form.Group>
+          </Col>
+          <Col>
+            {" "}
+            <Form.Group controlId="tags">
+              <Form.Label>Tags</Form.Label>
+              <ReactSelect
+                value={selectedTags.map((tag) => {
+                  return { label: tag.label, value: tag.id };
+                })}
+                options={availableTags.map((tag) => {
+                  return { label: tag.label, value: tag.id };
+                })}
+                onChange={(tags) => {
+                  setSelectedTags(
+                    tags.map((tag) => {
+                      return { label: tag.label, id: tag.value };
+                    })
+                  );
+                }}
+                isMulti
+              />
             </Form.Group>
           </Col>
         </Row>
